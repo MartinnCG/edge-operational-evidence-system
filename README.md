@@ -5,11 +5,11 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M1 — canonical event contract and deterministic simulator  
-**Implemented capability:** synthetic event generation, validation and stateless
-stream inspection
+**Current phase:** M2 — durable, idempotent SQLite event ledger  
+**Implemented capability:** synthetic event generation, canonical validation,
+stateless stream inspection and transactional append-only persistence
 
-## Demonstrated in M1
+## Demonstrated through M2
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -17,9 +17,13 @@ stream inspection
 - machine-readable rejection reasons;
 - synthetic baseline, delayed, duplicate, reordered and malformed scenarios;
 - stateless classification of those four fault conditions.
+- transactional SQLite ingestion with stable append ordinals;
+- idempotent retries and fail-closed identity conflicts;
+- atomic batch rollback and database-level mutation prevention;
+- durable content and digest recovery after reopening the database.
 
-M1 does **not** claim persistence, transactional idempotency, replay, recovery,
-sensor accuracy or evidence-bundle integrity.
+M2 does **not** claim deterministic replay, derived-state recovery, sensor
+accuracy or evidence-bundle integrity.
 
 ## Quick start
 
@@ -71,7 +75,8 @@ can be reproduced after restart.
 8. Findings support human review and do not control physical equipment.
 
 Only invariant 4 and the explicit treatment of invalid, delayed, duplicate and
-reordered inputs are implemented in M1. Later invariants remain requirements.
+reordered inputs were implemented in M1. M2 implements append-only persistence
+and idempotent ingestion. Replay and restart-state invariants remain requirements.
 
 ## Delivery sequence
 
@@ -91,6 +96,8 @@ The approved blueprint and first architecture decision are maintained in
 [Operational Systems Design](https://github.com/MartinnCG/operational-systems-design).
 The repository-level boundary is recorded in
 [`docs/architecture.md`](docs/architecture.md).
+SQLite transaction and idempotency choices are recorded in
+[`ADR-0002`](docs/adr/0002-sqlite-ingestion-transactions.md).
 
 ## Claims and data boundary
 
