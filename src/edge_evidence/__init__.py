@@ -6,6 +6,14 @@ from edge_evidence.event import (
     CanonicalEvent,
     EventValidationError,
 )
+from edge_evidence.ledger import (
+    EventIdentityConflict,
+    EventLedger,
+    IngestResult,
+    IngestStatus,
+    SourceSequenceConflict,
+    StoredEvent,
+)
 from edge_evidence.stream import StreamFinding, inspect_stream
 
 __all__ = [
@@ -13,7 +21,13 @@ __all__ = [
     "SYSTEM_ID",
     "CanonicalEvent",
     "EventValidationError",
+    "EventIdentityConflict",
+    "EventLedger",
+    "IngestResult",
+    "IngestStatus",
+    "SourceSequenceConflict",
     "StreamFinding",
+    "StoredEvent",
     "SystemIdentity",
     "__version__",
     "inspect_stream",
