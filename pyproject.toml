@@ -8,22 +8,14 @@ version = "0.1.0.dev0"
 description = "Edge-first reference system for reproducible operational evidence"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [
-  { name = "Martin CG" },
-]
-classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-]
+authors = [{ name = "Martin CG" }]
 dependencies = []
 
+[project.scripts]
+edge-evidence-simulate = "edge_evidence.simulator:main"
+
 [project.optional-dependencies]
-dev = [
-  "pytest>=8,<9",
-  "ruff>=0.6,<1",
-]
+dev = ["pytest>=8,<9", "ruff>=0.6,<1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
