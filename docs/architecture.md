@@ -2,11 +2,9 @@
 
 ## Current implementation state
 
-M0 establishes repository and package contracts only. It contains no sensor
-adapter, event schema, ledger, projector, rule engine or report generator.
-
-The package exposes machine-readable identity metadata so tests can verify that
-the repository does not imply runtime capability before implementation exists.
+M1 implements a protocol-independent canonical event boundary, deterministic
+synthetic scenarios and stateless stream inspection. It contains no durable
+ledger, projector, rule engine, report generator or hardware adapter.
 
 ## Intended component boundary
 
@@ -23,9 +21,9 @@ protocol adapter -> canonical validation -> append-only event ledger
 derived state + quality findings -> rules -> evidence bundle -> report
 ```
 
-Adapters translate protocols but do not assign operational meaning. The
-append-only ledger is the replayable source of truth. State, findings and
-reports are versioned projections.
+The simulator and canonical validation boundary are implemented in M1. Stream
+inspection demonstrates fault classification without persisting or mutating
+events. The ledger remains the planned replayable source of truth.
 
 ## Approved upstream decisions
 
@@ -37,6 +35,6 @@ in the portfolio repository:
 
 ## Next decision gate
 
-M1 must define the canonical event envelope and deterministic simulator. It may
-not introduce persistence or replay until the event contract has executable
-examples, stable validation outcomes and deterministic fixture digests.
+M2 may introduce SQLite only after M1 demonstrates stable validation outcomes,
+deterministic fixture bytes and explicit ordering semantics. M2 must define the
+transaction boundary and prove idempotent ingestion under retries.

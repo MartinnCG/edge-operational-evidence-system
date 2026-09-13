@@ -1,4 +1,4 @@
-"""Static system identity exposed during the M0 repository phase."""
+"""Static system identity for the current implementation phase."""
 
 from dataclasses import dataclass
 
@@ -14,6 +14,6 @@ class SystemIdentity:
 
 SYSTEM_ID = SystemIdentity(
     name="Edge Operational Evidence System",
-    development_phase="M0",
-    runtime_behavior_available=False,
+    development_phase="M1",
+    runtime_behavior_available=True,
 )

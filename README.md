@@ -5,8 +5,49 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M0 — repository contract  
-**Runtime capability:** not implemented
+**Current phase:** M1 — canonical event contract and deterministic simulator  
+**Implemented capability:** synthetic event generation, validation and stateless
+stream inspection
+
+## Demonstrated in M1
+
+- a strict versioned event envelope;
+- byte-identical JSONL for identical seed and configuration;
+- separate observation and ingestion timestamps;
+- machine-readable rejection reasons;
+- synthetic baseline, delayed, duplicate, reordered and malformed scenarios;
+- stateless classification of those four fault conditions.
+
+M1 does **not** claim persistence, transactional idempotency, replay, recovery,
+sensor accuracy or evidence-bundle integrity.
+
+## Quick start
+
+Requires Python 3.11 or 3.12.
+
+```bash
+python -m venv .venv
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+python -m pytest
+python -m ruff check .
+```
+
+Generate a deterministic baseline:
+
+```bash
+edge-evidence-simulate --seed 2026 --count 8 --output baseline.jsonl
+sha256sum baseline.jsonl
+```
+
+Generate a controlled fault fixture:
+
+```bash
+edge-evidence-simulate --scenario reordered --count 8
+```
+
+The command emits synthetic data only. See the executable contract in
+[`docs/event-contract-v1.md`](docs/event-contract-v1.md).
 
 ## Mission
 
@@ -14,39 +55,9 @@ Build a public, reproducible reference system that preserves and reconstructs
 operational evidence at the edge when sensors, networks and processes are
 imperfect.
 
-The system is designed to answer:
-
-- What was observed?
-- When was it observed and received?
-- Was the observation accepted, rejected or qualified?
-- What state was derived from the available evidence?
-- Which rule produced a finding?
-- Can the result be reproduced after a restart?
-
-## v0.1 boundary
-
-### In scope
-
-- deterministic sensor and fault simulation;
-- canonical event validation;
-- append-only local event persistence;
-- idempotent ingestion;
-- deterministic state reconstruction;
-- explicit data-quality findings;
-- rule evaluation over derived state;
-- structured evidence bundles;
-- health metrics and human-readable reports;
-- automated failure campaigns.
-
-### Out of scope
-
-- direct actuator or equipment control;
-- safety-certified alarms or decisions;
-- cloud availability as a core dependency;
-- machine-learning prediction;
-- autonomous agents;
-- customer dashboards;
-- real client, property, employee or mine-site data.
+The system is designed to answer what was observed, when it was observed and
+received, how it was qualified, what state was derived, and whether that result
+can be reproduced after restart.
 
 ## Core invariants
 
@@ -59,34 +70,8 @@ The system is designed to answer:
 7. Interpretation components declare their versions.
 8. Findings support human review and do not control physical equipment.
 
-These are architectural requirements. M0 does not claim that they have already
-been implemented.
-
-## Architecture
-
-The approved blueprint and first architecture decision are maintained in
-[Operational Systems Design](https://github.com/MartinnCG/operational-systems-design):
-
-- [Foundation blueprint](https://github.com/MartinnCG/operational-systems-design/blob/main/docs/edge_operational_evidence_blueprint.md)
-- [ADR-0001: append-only event ledger](https://github.com/MartinnCG/operational-systems-design/blob/main/docs/adr/0001-append-only-event-ledger.md)
-
-A local repository-level architecture boundary is recorded in
-[`docs/architecture.md`](docs/architecture.md).
-
-## Development setup
-
-Requires Python 3.11 or 3.12.
-
-```bash
-python -m venv .venv
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
-python -m pytest
-python -m ruff check .
-```
-
-The package currently exposes identity and development-version metadata only.
-Event contracts and runtime behaviour begin in M1.
+Only invariant 4 and the explicit treatment of invalid, delayed, duplicate and
+reordered inputs are implemented in M1. Later invariants remain requirements.
 
 ## Delivery sequence
 
@@ -100,12 +85,19 @@ Event contracts and runtime behaviour begin in M1.
 | M5 | Reproducible evidence bundle and operational report |
 | M6 | MQTT adapter and controlled offline/restart campaign |
 
-## Claims boundary
+## Architecture
 
-This repository is an engineering reference implementation. It does not
-certify sensor accuracy, operational safety or domain suitability. Public
-examples use synthetic data only. Findings are evidence for human review, not
-instructions to operate equipment.
+The approved blueprint and first architecture decision are maintained in
+[Operational Systems Design](https://github.com/MartinnCG/operational-systems-design).
+The repository-level boundary is recorded in
+[`docs/architecture.md`](docs/architecture.md).
+
+## Claims and data boundary
+
+This repository is an engineering reference implementation. It does not certify
+sensor accuracy, operational safety or domain suitability. Public examples use
+synthetic identities, locations and measurements only. Findings are evidence
+for human review, not instructions to operate equipment.
 
 ## License
 
