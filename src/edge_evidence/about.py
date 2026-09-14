@@ -14,6 +14,6 @@ class SystemIdentity:
 
 SYSTEM_ID = SystemIdentity(
     name="Edge Operational Evidence System",
-    development_phase="M2",
+    development_phase="M3",
     runtime_behavior_available=True,
 )

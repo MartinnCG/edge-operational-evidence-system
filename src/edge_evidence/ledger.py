@@ -70,6 +70,10 @@ class SourceSequenceConflict(LedgerConflictError):
     """A source sequence already binds another event identity."""
 
 
+class LedgerIntegrityError(RuntimeError):
+    """Stored canonical content no longer matches its recorded digest."""
+
+
 @dataclass(frozen=True, slots=True)
 class IngestResult:
     status: IngestStatus
@@ -226,14 +230,21 @@ class EventLedger:
                 FROM events ORDER BY ordinal ASC
                 """
             ).fetchall()
-        return tuple(
-            StoredEvent(
-                ordinal=row["ordinal"],
-                event=CanonicalEvent.from_mapping(json.loads(row["canonical_json"])),
-                content_sha256=row["content_sha256"],
+        stored: list[StoredEvent] = []
+        for row in rows:
+            actual_digest = hashlib.sha256(row["canonical_json"].encode()).hexdigest()
+            if actual_digest != row["content_sha256"]:
+                raise LedgerIntegrityError(
+                    f"content digest mismatch at ordinal {row['ordinal']}"
+                )
+            stored.append(
+                StoredEvent(
+                    ordinal=row["ordinal"],
+                    event=CanonicalEvent.from_mapping(json.loads(row["canonical_json"])),
+                    content_sha256=row["content_sha256"],
+                )
             )
-            for row in rows
-        )
+        return tuple(stored)
 
     def close(self) -> None:
         with self._lock:

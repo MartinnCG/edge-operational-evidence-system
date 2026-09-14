@@ -5,11 +5,11 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M2 — durable, idempotent SQLite event ledger  
+**Current phase:** M3 — deterministic replay and state digest  
 **Implemented capability:** synthetic event generation, canonical validation,
-stateless stream inspection and transactional append-only persistence
+stateless stream inspection, transactional persistence and versioned replay
 
-## Demonstrated through M2
+## Demonstrated through M3
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -21,9 +21,13 @@ stateless stream inspection and transactional append-only persistence
 - idempotent retries and fail-closed identity conflicts;
 - atomic batch rollback and database-level mutation prevention;
 - durable content and digest recovery after reopening the database.
+- deterministic reconstruction of versioned per-source state;
+- arrival-order-independent current state using source sequence;
+- canonical state bytes and SHA-256 digest;
+- atomic checkpoints that fail closed on corruption or version mismatch.
 
-M2 does **not** claim deterministic replay, derived-state recovery, sensor
-accuracy or evidence-bundle integrity.
+M3 does **not** claim domain-specific anomaly detection, sensor accuracy,
+evidence-bundle integrity or physical power-loss survivability.
 
 ## Quick start
 
@@ -76,7 +80,8 @@ can be reproduced after restart.
 
 Only invariant 4 and the explicit treatment of invalid, delayed, duplicate and
 reordered inputs were implemented in M1. M2 implements append-only persistence
-and idempotent ingestion. Replay and restart-state invariants remain requirements.
+and idempotent ingestion. M3 implements deterministic replay and state digests.
+Physical restart campaigns remain a later requirement.
 
 ## Delivery sequence
 
@@ -98,6 +103,8 @@ The repository-level boundary is recorded in
 [`docs/architecture.md`](docs/architecture.md).
 SQLite transaction and idempotency choices are recorded in
 [`ADR-0002`](docs/adr/0002-sqlite-ingestion-transactions.md).
+Projection ordering and versioning are recorded in
+[`ADR-0003`](docs/adr/0003-deterministic-projection.md).
 
 ## Claims and data boundary
 
