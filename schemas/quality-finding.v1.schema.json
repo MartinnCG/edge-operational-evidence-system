@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/edge-evidence/quality-finding.v1.schema.json",
+  "title": "Evidence Quality Finding v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "finding_id",
+    "code",
+    "rule_id",
+    "rule_version",
+    "severity",
+    "source_id",
+    "event_ids",
+    "ledger_ordinals",
+    "evidence",
+    "interpretation"
+  ],
+  "properties": {
+    "finding_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "code": {"type": "string"},
+    "rule_id": {"type": "string", "pattern": "^DQ-[0-9]{3}$"},
+    "rule_version": {"const": "1.0"},
+    "severity": {"enum": ["warning"]},
+    "source_id": {"type": "string"},
+    "event_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "ledger_ordinals": {
+      "type": "array",
+      "items": {"type": "integer", "minimum": 1},
+      "minItems": 1
+    },
+    "evidence": {"type": "object"},
+    "interpretation": {"type": "string", "minLength": 1}
+  }
+}
