@@ -11,8 +11,16 @@ from edge_evidence.ledger import (
     EventLedger,
     IngestResult,
     IngestStatus,
+    LedgerIntegrityError,
     SourceSequenceConflict,
     StoredEvent,
+)
+from edge_evidence.projection import (
+    PROJECTOR_VERSION,
+    ProjectionError,
+    ProjectionResult,
+    project_events,
+    replay,
 )
 from edge_evidence.stream import StreamFinding, inspect_stream
 
@@ -25,12 +33,18 @@ __all__ = [
     "EventLedger",
     "IngestResult",
     "IngestStatus",
+    "LedgerIntegrityError",
+    "PROJECTOR_VERSION",
+    "ProjectionError",
+    "ProjectionResult",
     "SourceSequenceConflict",
     "StreamFinding",
     "StoredEvent",
     "SystemIdentity",
     "__version__",
     "inspect_stream",
+    "project_events",
+    "replay",
 ]
 
 __version__ = "0.1.0.dev0"

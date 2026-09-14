@@ -11,6 +11,7 @@ from edge_evidence.ledger import (
     EventIdentityConflict,
     EventLedger,
     IngestStatus,
+    LedgerIntegrityError,
     SourceSequenceConflict,
 )
 from edge_evidence.simulator import SimulatorConfig, generate_records
@@ -122,3 +123,23 @@ def test_concurrent_retries_create_one_row(tmp_path) -> None:
     assert statuses.count(IngestStatus.DUPLICATE) == 7
     with EventLedger(path) as ledger:
         assert ledger.count() == 1
+
+
+def test_stored_content_digest_mismatch_is_detected(tmp_path) -> None:
+    path = tmp_path / "ledger.db"
+    events = _events(2)
+    with EventLedger(path) as ledger:
+        ledger.ingest(events[0])
+    replacement = events[1].canonical_json()
+    connection = sqlite3.connect(path)
+    try:
+        connection.execute("DROP TRIGGER events_prevent_update")
+        connection.execute(
+            "UPDATE events SET canonical_json = ? WHERE ordinal = 1", (replacement,)
+        )
+        connection.commit()
+    finally:
+        connection.close()
+    with EventLedger(path) as ledger:
+        with pytest.raises(LedgerIntegrityError, match="digest mismatch"):
+            ledger.read_events()

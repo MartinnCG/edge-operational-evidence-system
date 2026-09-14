@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/edge-evidence/projected-state.v1.schema.json",
+  "title": "Projected Operational State v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["projector_version", "event_count", "last_ordinal", "sources"],
+  "properties": {
+    "projector_version": {"const": "1.0"},
+    "event_count": {"type": "integer", "minimum": 0},
+    "last_ordinal": {"type": "integer", "minimum": 0},
+    "sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_count",
+          "latest_event_id",
+          "latest_event_type",
+          "latest_ingested_at",
+          "latest_observed_at",
+          "latest_payload",
+          "latest_source_sequence"
+        ],
+        "properties": {
+          "event_count": {"type": "integer", "minimum": 1},
+          "latest_event_id": {"type": "string"},
+          "latest_event_type": {"type": "string"},
+          "latest_ingested_at": {"type": "string", "format": "date-time"},
+          "latest_observed_at": {"type": "string", "format": "date-time"},
+          "latest_payload": {"type": "object"},
+          "latest_source_sequence": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}
