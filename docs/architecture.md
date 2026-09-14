@@ -2,9 +2,9 @@
 
 ## Current implementation state
 
-M3 implements a protocol-independent canonical event boundary, deterministic
-synthetic scenarios, a durable SQLite ledger and versioned state replay. It
-contains no domain rule engine, report generator or hardware adapter.
+M4 implements a protocol-independent event boundary, deterministic scenarios,
+a durable SQLite ledger, versioned replay and generic evidence-quality rules.
+It contains no domain rule engine, report generator or hardware adapter.
 
 ## Intended component boundary
 
@@ -24,6 +24,7 @@ derived state + quality findings -> rules -> evidence bundle -> report
 The simulator and canonical validation boundary were implemented in M1. M2
 adds transactional, append-only persistence and idempotent retries. M3 projects
 that stored truth into canonical per-source state and a reproducible digest.
+M4 evaluates explicit evidence conditions without changing ledger or state.
 
 ## Approved upstream decisions
 
@@ -37,9 +38,10 @@ in the portfolio repository:
 
 - [ADR-0002: SQLite ingestion transactions and idempotency](adr/0002-sqlite-ingestion-transactions.md)
 - [ADR-0003: deterministic state projection](adr/0003-deterministic-projection.md)
+- [ADR-0004: versioned quality findings](adr/0004-versioned-quality-findings.md)
 
 ## Next decision gate
 
-M4 may introduce quality rules only after M3 proves repeat replay, restart
-recovery, arrival-order-independent state and checkpoint verification. Findings
-must reference immutable event identities and declared rule versions.
+M5 may build evidence bundles only after M4 proves deterministic campaigns and
+finding traceability. A bundle must bind source events, projected state, policy,
+findings and their exact digests without declaring itself valid before checks run.

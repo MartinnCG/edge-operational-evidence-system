@@ -5,11 +5,11 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M3 — deterministic replay and state digest  
+**Current phase:** M4 — traceable quality findings and failure campaigns  
 **Implemented capability:** synthetic event generation, canonical validation,
-stateless stream inspection, transactional persistence and versioned replay
+transactional persistence, versioned replay and controlled quality campaigns
 
-## Demonstrated through M3
+## Demonstrated through M4
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -25,9 +25,13 @@ stateless stream inspection, transactional persistence and versioned replay
 - arrival-order-independent current state using source sequence;
 - canonical state bytes and SHA-256 digest;
 - atomic checkpoints that fail closed on corruption or version mismatch.
+- versioned findings linked to event identities and ledger ordinals;
+- explicit delay, gap, regression, repeated-payload and stale-source indicators;
+- deterministic baseline and seven synthetic failure campaigns;
+- canonical campaign outputs and reproducible SHA-256 digests.
 
-M3 does **not** claim domain-specific anomaly detection, sensor accuracy,
-evidence-bundle integrity or physical power-loss survivability.
+M4 does **not** claim domain or safety diagnosis, sensor accuracy,
+evidence-bundle integrity or physical fault survivability.
 
 ## Quick start
 
@@ -52,6 +56,12 @@ Generate a controlled fault fixture:
 
 ```bash
 edge-evidence-simulate --scenario reordered --count 8
+```
+
+Run a complete quality campaign:
+
+```bash
+edge-evidence-campaign missing --output missing-campaign.json
 ```
 
 The command emits synthetic data only. See the executable contract in
@@ -81,7 +91,8 @@ can be reproduced after restart.
 Only invariant 4 and the explicit treatment of invalid, delayed, duplicate and
 reordered inputs were implemented in M1. M2 implements append-only persistence
 and idempotent ingestion. M3 implements deterministic replay and state digests.
-Physical restart campaigns remain a later requirement.
+M4 adds generic, traceable quality findings. Physical restart campaigns remain
+a later requirement.
 
 ## Delivery sequence
 
@@ -105,6 +116,8 @@ SQLite transaction and idempotency choices are recorded in
 [`ADR-0002`](docs/adr/0002-sqlite-ingestion-transactions.md).
 Projection ordering and versioning are recorded in
 [`ADR-0003`](docs/adr/0003-deterministic-projection.md).
+Quality traceability is recorded in
+[`ADR-0004`](docs/adr/0004-versioned-quality-findings.md).
 
 ## Claims and data boundary
 
