@@ -14,6 +14,7 @@ dependencies = []
 [project.scripts]
 edge-evidence-simulate = "edge_evidence.simulator:main"
 edge-evidence-campaign = "edge_evidence.campaign:main"
+edge-evidence-bundle = "edge_evidence.bundle:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<9", "ruff>=0.6,<1"]

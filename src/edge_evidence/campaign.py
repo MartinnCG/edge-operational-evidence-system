@@ -70,7 +70,9 @@ class CampaignResult:
         return hashlib.sha256(self.canonical_json().encode()).hexdigest()
 
 
-def _records(scenario: CampaignScenario, seed: int) -> list[dict[str, Any]]:
+def campaign_records(
+    scenario: CampaignScenario, seed: int
+) -> list[dict[str, Any]]:
     mapped = {
         CampaignScenario.BASELINE: Scenario.BASELINE,
         CampaignScenario.DELAYED: Scenario.DELAYED,
@@ -96,7 +98,7 @@ def _records(scenario: CampaignScenario, seed: int) -> list[dict[str, Any]]:
 def run_campaign(
     scenario: CampaignScenario, *, seed: int = 2026
 ) -> CampaignResult:
-    records = _records(scenario, seed)
+    records = campaign_records(scenario, seed)
     inspected = inspect_stream(records)
     boundary = tuple(
         {
