@@ -64,6 +64,21 @@ class QualityFinding:
         }
 
 
+def finding_identity_digest(finding: Mapping[str, Any]) -> str:
+    """Recompute the deterministic identity bound by a finding document."""
+    identity = {
+        "code": finding["code"],
+        "event_ids": finding["event_ids"],
+        "evidence": finding["evidence"],
+        "ledger_ordinals": finding["ledger_ordinals"],
+        "rule_id": finding["rule_id"],
+        "rule_version": finding["rule_version"],
+        "source_id": finding["source_id"],
+    }
+    canonical = json.dumps(identity, separators=(",", ":"), sort_keys=True)
+    return hashlib.sha256(canonical.encode()).hexdigest()
+
+
 def _finding(
     *,
     code: str,
@@ -85,9 +100,8 @@ def _finding(
         "rule_version": QUALITY_POLICY_VERSION,
         "source_id": source_id,
     }
-    canonical = json.dumps(identity, separators=(",", ":"), sort_keys=True)
     return QualityFinding(
-        finding_id=hashlib.sha256(canonical.encode()).hexdigest(),
+        finding_id=finding_identity_digest(identity),
         code=code,
         rule_id=rule_id,
         rule_version=QUALITY_POLICY_VERSION,

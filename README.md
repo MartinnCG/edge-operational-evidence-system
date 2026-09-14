@@ -5,11 +5,11 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M4 — traceable quality findings and failure campaigns  
+**Current phase:** M5 — independently verified operational evidence bundles  
 **Implemented capability:** synthetic event generation, canonical validation,
-transactional persistence, versioned replay and controlled quality campaigns
+versioned replay, quality campaigns and portable evidence-bundle verification
 
-## Demonstrated through M4
+## Demonstrated through M5
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -29,9 +29,13 @@ transactional persistence, versioned replay and controlled quality campaigns
 - explicit delay, gap, regression, repeated-payload and stale-source indicators;
 - deterministic baseline and seven synthetic failure campaigns;
 - canonical campaign outputs and reproducible SHA-256 digests.
+- write-once bundles constructed through atomic directory publication;
+- manifests binding artifact paths, sizes, media types and SHA-256 digests;
+- semantic verification of event, state, policy and finding relationships;
+- deterministic human-readable reports with explicit claim boundaries.
 
-M4 does **not** claim domain or safety diagnosis, sensor accuracy,
-evidence-bundle integrity or physical fault survivability.
+M5 does **not** claim digital-signature authenticity, domain or safety diagnosis,
+sensor accuracy, long-term archival guarantees or physical fault survivability.
 
 ## Quick start
 
@@ -64,6 +68,16 @@ Run a complete quality campaign:
 edge-evidence-campaign missing --output missing-campaign.json
 ```
 
+Build and independently verify a synthetic evidence bundle:
+
+```bash
+edge-evidence-bundle build-demo missing \
+  --output evidence/demo-missing \
+  --bundle-id demo-missing-001 \
+  --created-at 2026-01-02T03:04:05Z
+edge-evidence-bundle verify evidence/demo-missing
+```
+
 The command emits synthetic data only. See the executable contract in
 [`docs/event-contract-v1.md`](docs/event-contract-v1.md).
 
@@ -92,7 +106,8 @@ Only invariant 4 and the explicit treatment of invalid, delayed, duplicate and
 reordered inputs were implemented in M1. M2 implements append-only persistence
 and idempotent ingestion. M3 implements deterministic replay and state digests.
 M4 adds generic, traceable quality findings. Physical restart campaigns remain
-a later requirement.
+a later requirement. M5 seals these layers into portable bundles and verifies
+both their bytes and semantic cross-references independently.
 
 ## Delivery sequence
 
@@ -118,6 +133,8 @@ Projection ordering and versioning are recorded in
 [`ADR-0003`](docs/adr/0003-deterministic-projection.md).
 Quality traceability is recorded in
 [`ADR-0004`](docs/adr/0004-versioned-quality-findings.md).
+Bundle trust and verification are recorded in
+[`ADR-0005`](docs/adr/0005-independent-bundle-verification.md).
 
 ## Claims and data boundary
 

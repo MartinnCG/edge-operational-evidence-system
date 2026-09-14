@@ -42,3 +42,11 @@ jobs:
 
       - name: Test
         run: python -m pytest
+
+      - name: Build and independently verify synthetic evidence bundle
+        run: |
+          python -m edge_evidence.bundle build-demo missing \
+            --output /tmp/edge-evidence-ci \
+            --bundle-id ci-synthetic-missing \
+            --created-at 2026-01-02T03:04:05Z
+          python -m edge_evidence.bundle verify /tmp/edge-evidence-ci

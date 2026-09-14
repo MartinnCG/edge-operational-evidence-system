@@ -2,9 +2,9 @@
 
 ## Current implementation state
 
-M4 implements a protocol-independent event boundary, deterministic scenarios,
-a durable SQLite ledger, versioned replay and generic evidence-quality rules.
-It contains no domain rule engine, report generator or hardware adapter.
+M5 implements a protocol-independent event boundary, deterministic scenarios,
+a durable SQLite ledger, versioned replay, generic quality rules and portable
+evidence bundles. It contains no domain rule engine or hardware adapter.
 
 ## Intended component boundary
 
@@ -25,6 +25,8 @@ The simulator and canonical validation boundary were implemented in M1. M2
 adds transactional, append-only persistence and idempotent retries. M3 projects
 that stored truth into canonical per-source state and a reproducible digest.
 M4 evaluates explicit evidence conditions without changing ledger or state.
+M5 binds those layers into a write-once artifact set and verifies it in a
+separate operation.
 
 ## Approved upstream decisions
 
@@ -39,9 +41,10 @@ in the portfolio repository:
 - [ADR-0002: SQLite ingestion transactions and idempotency](adr/0002-sqlite-ingestion-transactions.md)
 - [ADR-0003: deterministic state projection](adr/0003-deterministic-projection.md)
 - [ADR-0004: versioned quality findings](adr/0004-versioned-quality-findings.md)
+- [ADR-0005: independent bundle verification](adr/0005-independent-bundle-verification.md)
 
 ## Next decision gate
 
-M5 may build evidence bundles only after M4 proves deterministic campaigns and
-finding traceability. A bundle must bind source events, projected state, policy,
-findings and their exact digests without declaring itself valid before checks run.
+M6 may introduce a protocol adapter and controlled restart campaign only after
+M5 proves portable evidence closure. Adapter input must enter through the M1
+contract and must not weaken ledger, replay, quality or verification boundaries.
