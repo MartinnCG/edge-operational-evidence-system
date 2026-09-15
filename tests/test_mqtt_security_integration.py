@@ -4,6 +4,7 @@
 
 import os
 import ssl
+import threading
 import time
 import uuid
 from datetime import UTC, datetime
@@ -49,6 +50,7 @@ def _client(cert_name: str | None) -> mqtt.Client:
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
         client_id=f"m8-{cert_name or 'anonymous'}-{uuid.uuid4()}",
         protocol=mqtt.MQTTv311,
+        reconnect_on_failure=False,
     )
     tls = {"ca_certs": str(PKI / "ca.crt"), "tls_version": ssl.PROTOCOL_TLS_CLIENT}
     if cert_name is not None:
@@ -87,8 +89,39 @@ def _attempt_forbidden_publish(event: CanonicalEvent, *, cert_name: str) -> None
 
 def _assert_tls_rejected(cert_name: str | None) -> None:
     client = _client(cert_name)
-    with pytest.raises((ssl.SSLError, ConnectionError, OSError)):
+    accepted = threading.Event()
+    rejected = threading.Event()
+
+    def on_connect(client, userdata, flags, reason_code, properties) -> None:
+        del client, userdata, flags, properties
+        if reason_code == 0:
+            accepted.set()
+        else:
+            rejected.set()
+
+    def on_connect_fail(client, userdata) -> None:
+        del client, userdata
+        rejected.set()
+
+    def on_disconnect(
+        client, userdata, disconnect_flags, reason_code, properties
+    ) -> None:
+        del client, userdata, disconnect_flags, reason_code, properties
+        rejected.set()
+
+    client.on_connect = on_connect
+    client.on_connect_fail = on_connect_fail
+    client.on_disconnect = on_disconnect
+    try:
         client.connect(HOST, PORT, keepalive=10)
+    except (ssl.SSLError, ConnectionError, OSError):
+        return
+    client.loop_start()
+    try:
+        assert rejected.wait(5), "broker did not close the unauthorized connection"
+        assert not accepted.is_set()
+    finally:
+        client.loop_stop()
 
 
 @pytest.mark.integration
