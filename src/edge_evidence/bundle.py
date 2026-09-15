@@ -40,7 +40,7 @@ from edge_evidence.quality import (
 )
 
 BUNDLE_VERSION = "1.0"
-SYSTEM_VERSION = "0.1.0.dev0"
+SYSTEM_VERSION = "0.1.0"
 
 _PAYLOAD_FILES = (
     "boundary_findings.jsonl",
