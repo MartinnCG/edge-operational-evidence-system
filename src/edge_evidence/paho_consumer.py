@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import ssl
 import threading
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from pathlib import Path
 from types import ModuleType
 from typing import Any
 
@@ -23,6 +25,22 @@ class BrokerConnectionError(RuntimeError):
 
 
 @dataclass(frozen=True, slots=True)
+class PahoTlsConfig:
+    ca_certificate: Path
+    client_certificate: Path
+    client_private_key: Path
+
+    def __post_init__(self) -> None:
+        for path in (
+            self.ca_certificate,
+            self.client_certificate,
+            self.client_private_key,
+        ):
+            if not path.is_file():
+                raise ValueError(f"TLS file does not exist: {path}")
+
+
+@dataclass(frozen=True, slots=True)
 class PahoConsumerConfig:
     host: str = "127.0.0.1"
     port: int = 1883
@@ -30,6 +48,7 @@ class PahoConsumerConfig:
     topic_filter: str = f"{MQTT_TOPIC_ROOT}/+/+"
     qos: int = 1
     keepalive_seconds: int = 10
+    tls: PahoTlsConfig | None = None
 
     def __post_init__(self) -> None:
         if not self.host:
@@ -84,6 +103,14 @@ class PahoMqttConsumer:
             manual_ack=True,
         )
         self._client.reconnect_delay_set(min_delay=1, max_delay=2)
+        if self.config.tls is not None:
+            self._client.tls_set(
+                ca_certs=str(self.config.tls.ca_certificate),
+                certfile=str(self.config.tls.client_certificate),
+                keyfile=str(self.config.tls.client_private_key),
+                tls_version=ssl.PROTOCOL_TLS_CLIENT,
+            )
+            self._client.tls_insecure_set(False)
         self._client.on_connect = self._on_connect
         self._client.on_connect_fail = self._on_connect_fail
         self._client.on_disconnect = self._on_disconnect

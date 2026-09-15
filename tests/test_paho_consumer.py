@@ -1,6 +1,7 @@
 """Broker-free unit tests for the concrete Paho callback adapter."""
 
 from datetime import UTC, datetime
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -12,6 +13,7 @@ from edge_evidence.paho_consumer import (
     BrokerConnectionError,
     PahoConsumerConfig,
     PahoMqttConsumer,
+    PahoTlsConfig,
 )
 from edge_evidence.simulator import SimulatorConfig, generate_records
 
@@ -32,9 +34,17 @@ class _FakeClient:
         self.connect_args = None
         self.loop_started = False
         self.assert_before_ack = None
+        self.tls_args = None
+        self.tls_insecure = None
 
     def reconnect_delay_set(self, *, min_delay: int, max_delay: int) -> None:
         self.delays = (min_delay, max_delay)
+
+    def tls_set(self, **kwargs) -> None:
+        self.tls_args = kwargs
+
+    def tls_insecure_set(self, value: bool) -> None:
+        self.tls_insecure = value
 
     def subscribe(self, topic: str, *, qos: int):
         self.subscriptions.append((topic, qos))
@@ -90,6 +100,34 @@ def _consumer(ledger: EventLedger, module: _FakeMqtt) -> PahoMqttConsumer:
 def test_configuration_requires_qos_one() -> None:
     with pytest.raises(ValueError, match="QoS 1"):
         PahoConsumerConfig(qos=0)
+
+
+def test_tls_files_must_exist(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="does not exist"):
+        PahoTlsConfig(
+            tmp_path / "ca.crt",
+            tmp_path / "client.crt",
+            tmp_path / "client.key",
+        )
+
+
+def test_tls_is_hostname_verified_and_never_insecure(tmp_path: Path) -> None:
+    paths = [tmp_path / name for name in ("ca.crt", "client.crt", "client.key")]
+    for path in paths:
+        path.write_text("synthetic unit-test fixture")
+    module = _FakeMqtt()
+    config = PahoConsumerConfig(
+        port=8883,
+        tls=PahoTlsConfig(paths[0], paths[1], paths[2]),
+    )
+    with EventLedger(":memory:") as ledger:
+        PahoMqttConsumer(
+            MqttIngestionRuntime(ledger), config, mqtt_module=module
+        )
+        assert module.client.tls_args["ca_certs"] == str(paths[0])
+        assert module.client.tls_args["certfile"] == str(paths[1])
+        assert module.client.tls_args["keyfile"] == str(paths[2])
+        assert module.client.tls_insecure is False
 
 
 def test_client_uses_callback_v2_manual_ack_and_persistent_session() -> None:

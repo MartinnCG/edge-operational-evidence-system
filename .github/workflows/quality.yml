@@ -92,3 +92,43 @@ jobs:
       - name: Remove broker and test volume
         if: always()
         run: docker compose -f ops/mqtt/compose.yml down --volumes
+
+  mqtt-security:
+    name: Mosquitto mutual TLS / ACL
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install package, tests and MQTT client
+        run: python -m pip install -e ".[dev,mqtt]"
+
+      - name: Generate ephemeral synthetic PKI
+        run: sh ops/mqtt-secure/generate-test-pki.sh
+
+      - name: Start mutual-TLS Mosquitto broker
+        run: docker compose -f ops/mqtt-secure/compose.yml up -d --wait
+
+      - name: Test certificate identity and role ACLs
+        env:
+          MQTT_SECURITY_INTEGRATION: "1"
+        run: >-
+          python -m pytest tests/test_mqtt_security_integration.py
+          -m integration
+
+      - name: Capture secure broker logs
+        if: always()
+        run: docker compose -f ops/mqtt-secure/compose.yml logs --no-color
+
+      - name: Remove secure broker
+        if: always()
+        run: docker compose -f ops/mqtt-secure/compose.yml down --volumes

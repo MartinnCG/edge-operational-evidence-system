@@ -30,6 +30,7 @@ from edge_evidence.paho_consumer import (
     BrokerConnectionError,
     PahoConsumerConfig,
     PahoMqttConsumer,
+    PahoTlsConfig,
     PahoUnavailableError,
 )
 from edge_evidence.projection import (
@@ -64,6 +65,7 @@ __all__ = [
     "PAHO_CONSUMER_VERSION",
     "PahoConsumerConfig",
     "PahoMqttConsumer",
+    "PahoTlsConfig",
     "PahoUnavailableError",
     "PROJECTOR_VERSION",
     "ProjectionError",
