@@ -25,6 +25,13 @@ from edge_evidence.mqtt import (
     event_to_mqtt,
     mqtt_to_event,
 )
+from edge_evidence.paho_consumer import (
+    PAHO_CONSUMER_VERSION,
+    BrokerConnectionError,
+    PahoConsumerConfig,
+    PahoMqttConsumer,
+    PahoUnavailableError,
+)
 from edge_evidence.projection import (
     PROJECTOR_VERSION,
     ProjectionError,
@@ -54,6 +61,10 @@ __all__ = [
     "MQTT_ADAPTER_VERSION",
     "MqttAdapterError",
     "MqttIngestionRuntime",
+    "PAHO_CONSUMER_VERSION",
+    "PahoConsumerConfig",
+    "PahoMqttConsumer",
+    "PahoUnavailableError",
     "PROJECTOR_VERSION",
     "ProjectionError",
     "ProjectionResult",
@@ -68,6 +79,7 @@ __all__ = [
     "DeliveryDisposition",
     "DeliveryResult",
     "RuntimeMetrics",
+    "BrokerConnectionError",
     "__version__",
     "inspect_stream",
     "evaluate_quality",
@@ -77,4 +89,4 @@ __all__ = [
     "replay",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0.dev0"
