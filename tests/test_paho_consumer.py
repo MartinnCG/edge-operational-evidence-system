@@ -149,6 +149,15 @@ def test_unexpected_disconnect_and_reconnect_are_observable() -> None:
         assert consumer.runtime.metrics.reconnects == 1
 
 
+def test_restored_persistent_session_is_not_resubscribed() -> None:
+    module = _FakeMqtt()
+    with EventLedger(":memory:") as ledger:
+        consumer = _consumer(ledger, module)
+        flags = SimpleNamespace(session_present=True)
+        consumer._on_connect(module.client, None, flags, 0, None)
+        assert module.client.subscriptions == []
+
+
 def test_connection_timeout_fails_explicitly() -> None:
     module = _FakeMqtt()
     with EventLedger(":memory:") as ledger:

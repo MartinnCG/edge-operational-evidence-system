@@ -115,16 +115,18 @@ class PahoMqttConsumer:
     def _on_connect(
         self, client: Any, userdata: Any, flags: Any, reason_code: Any, properties: Any
     ) -> None:
-        del userdata, flags, properties
+        del userdata, properties
         if reason_code != 0:
             self._record_connection_failure()
             return
-        result, _message_id = client.subscribe(
-            self.config.topic_filter, qos=self.config.qos
-        )
-        if result != self._mqtt.MQTT_ERR_SUCCESS:
-            self._record_error(f"subscribe_failed:{result}")
-            return
+        session_present = bool(getattr(flags, "session_present", False))
+        if not session_present:
+            result, _message_id = client.subscribe(
+                self.config.topic_filter, qos=self.config.qos
+            )
+            if result != self._mqtt.MQTT_ERR_SUCCESS:
+                self._record_error(f"subscribe_failed:{result}")
+                return
         if self._ever_connected:
             self.runtime.record_reconnect()
         self._ever_connected = True

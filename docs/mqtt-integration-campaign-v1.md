@@ -17,8 +17,9 @@
 4. Publish a second event and require durable acceptance.
 5. Stop the Mosquitto container and observe an unexpected disconnect.
 6. Restart the same container and volume and observe automatic reconnection.
-7. Publish a third event and require ingestion to resume at count three.
-8. Require zero callback and runtime rejections.
+7. Restore the persistent subscription without creating a second subscription.
+8. Publish a third event and require ingestion to resume at count three.
+9. Require zero callback and runtime rejections.
 
 Manual acknowledgement occurs after the broker-neutral runtime returns. A
 processing exception is recorded and deliberately left unacknowledged.

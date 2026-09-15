@@ -13,9 +13,10 @@ the message has been classified and, for accepted input, durably committed.
 
 Use the optional Paho MQTT 2.x client with callback API v2, MQTT 3.1.1,
 `clean_session=False`, automatic reconnect and manual acknowledgement. Subscribe
-at QoS 1. Invoke the broker-neutral runtime first and acknowledge only after it
-returns a durable acceptance, an idempotent duplicate or a bounded rejection.
-Unexpected processing exceptions remain unacknowledged.
+at QoS 1 when the broker does not restore an existing session; do not resubscribe
+when `session_present` is true. Invoke the broker-neutral runtime first and
+acknowledge only after it returns a durable acceptance, an idempotent duplicate
+or a bounded rejection. Unexpected processing exceptions remain unacknowledged.
 
 Run integration tests against the pinned official
 `eclipse-mosquitto:2.1.2-alpine` image. Bind its unauthenticated test listener to
