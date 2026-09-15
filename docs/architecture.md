@@ -2,10 +2,11 @@
 
 ## Current implementation state
 
-M6 implements a protocol-independent event boundary, deterministic scenarios,
+M7 implements a protocol-independent event boundary, deterministic scenarios,
 a durable SQLite ledger, versioned replay, generic quality rules, portable
-evidence bundles and a strict MQTT message adapter. It contains no domain rule
-engine, broker client or hardware-specific adapter.
+evidence bundles, a strict MQTT message adapter and a concrete Paho client tested
+against a pinned Mosquitto container. It contains no domain rule engine or
+hardware-specific adapter.
 
 ## Intended component boundary
 
@@ -29,6 +30,7 @@ M4 evaluates explicit evidence conditions without changing ledger or state.
 M5 binds those layers into a write-once artifact set and verifies it in a
 separate operation.
 M6 proves MQTT-style redelivery and restart recovery through the same boundaries.
+M7 adds a real broker transport without changing canonical evidence semantics.
 
 ## Approved upstream decisions
 
@@ -45,9 +47,11 @@ in the portfolio repository:
 - [ADR-0004: versioned quality findings](adr/0004-versioned-quality-findings.md)
 - [ADR-0005: independent bundle verification](adr/0005-independent-bundle-verification.md)
 - [ADR-0006: MQTT boundary and controlled recovery](adr/0006-mqtt-boundary-and-recovery.md)
+- [ADR-0007: real MQTT integration](adr/0007-real-mqtt-integration.md)
 
 ## v0.1 boundary
 
-M0–M6 now form the v0.1 reference path. A later milestone may add a concrete
-broker client, external signature or hardware campaign only with an explicit
-contract and without weakening ledger, replay, quality or verification layers.
+M0–M6 form the v0.1 reference path. M7 begins v0.2 development by adding a
+concrete broker client and reproducible integration environment. A later
+milestone may add authentication, external signatures or a hardware campaign
+only with explicit contracts and without weakening the evidence layers.

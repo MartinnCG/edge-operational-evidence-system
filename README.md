@@ -5,12 +5,12 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M6 — MQTT boundary and controlled restart recovery  
+**Current phase:** M7 — real Mosquitto integration and reconnect campaign  
 **Implemented capability:** synthetic event generation, canonical validation,
 durable ingestion, versioned replay, quality campaigns, portable bundles and
-process-level recovery proof
+real-broker integration proof
 
-## Demonstrated through M6
+## Demonstrated through M7
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -40,9 +40,14 @@ process-level recovery proof
 - committed SQLite recovery after abrupt process termination;
 - digest equality with an uninterrupted reference execution;
 - independent verification of the recovered evidence bundle.
+- a concrete Paho 2.x consumer using callback API v2 and manual QoS 1 ACK;
+- a pinned, loopback-only Eclipse Mosquitto container;
+- retained-message delivery to a fresh subscriber;
+- controlled broker stop/start with automatic client reconnection;
+- resumed durable ingestion after the broker becomes available again.
 
-M6 does **not** claim broker certification, end-to-end network reliability,
-digital-signature authenticity, sensor accuracy, safety diagnosis, long-term
+M7 does **not** claim production broker certification, TLS or authentication,
+end-to-end network reliability, sensor accuracy, safety diagnosis, long-term
 archival guarantees or physical fault survivability.
 
 ## Quick start
@@ -52,7 +57,7 @@ Requires Python 3.11 or 3.12.
 ```bash
 python -m venv .venv
 python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,mqtt]"
 python -m pytest
 python -m ruff check .
 ```
@@ -95,6 +100,15 @@ edge-evidence-recovery run \
   --crash-after 4
 ```
 
+Run the opt-in real-broker campaign:
+
+```bash
+docker compose -f ops/mqtt/compose.yml up -d --wait
+MQTT_INTEGRATION=1 python -m pytest \
+  tests/test_mqtt_integration.py -m integration
+docker compose -f ops/mqtt/compose.yml down --volumes
+```
+
 The command emits synthetic data only. See the executable contract in
 [`docs/event-contract-v1.md`](docs/event-contract-v1.md).
 
@@ -126,6 +140,8 @@ M4 adds generic, traceable quality findings. M5 seals these layers into portable
 bundles and verifies their bytes and semantic cross-references independently.
 M6 maps MQTT deliveries into the canonical boundary and proves local recovery,
 redelivery convergence and evidence verification after abrupt process exit.
+M7 connects that boundary to a pinned Mosquitto broker through Paho, then proves
+retained QoS 1 delivery and recovery from a controlled broker outage.
 
 ## Delivery sequence
 
@@ -138,6 +154,7 @@ redelivery convergence and evidence verification after abrupt process exit.
 | M4 | Traceable data-quality findings and failure fixtures |
 | M5 | Reproducible evidence bundle and operational report |
 | M6 | MQTT adapter and controlled offline/restart campaign |
+| M7 | Real Mosquitto/Paho integration and reconnect campaign |
 
 ## Architecture
 
@@ -158,6 +175,9 @@ MQTT authority and restart recovery are recorded in
 The executable message and campaign contracts are documented in
 [`mqtt-boundary-v1.md`](docs/mqtt-boundary-v1.md) and
 [`recovery-campaign-v1.md`](docs/recovery-campaign-v1.md).
+The real-broker decision and campaign are documented in
+[`ADR-0007`](docs/adr/0007-real-mqtt-integration.md) and
+[`mqtt-integration-campaign-v1.md`](docs/mqtt-integration-campaign-v1.md).
 
 ## Claims and data boundary
 

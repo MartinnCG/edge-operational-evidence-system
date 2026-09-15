@@ -57,3 +57,38 @@ jobs:
             --workspace /tmp/edge-recovery-ci \
             --count 8 \
             --crash-after 4
+
+  mqtt-integration:
+    name: Mosquitto 2.1 / Paho 2.x
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install package, tests and MQTT client
+        run: python -m pip install -e ".[dev,mqtt]"
+
+      - name: Start pinned Mosquitto broker
+        run: docker compose -f ops/mqtt/compose.yml up -d --wait
+
+      - name: Test retained QoS 1 delivery and broker reconnect
+        env:
+          MQTT_INTEGRATION: "1"
+        run: python -m pytest tests/test_mqtt_integration.py -m integration
+
+      - name: Capture broker logs
+        if: always()
+        run: docker compose -f ops/mqtt/compose.yml logs --no-color
+
+      - name: Remove broker and test volume
+        if: always()
+        run: docker compose -f ops/mqtt/compose.yml down --volumes
