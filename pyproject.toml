@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edge-operational-evidence-system"
-version = "0.1.0.dev0"
+version = "0.1.0"
 description = "Edge-first reference system for reproducible operational evidence"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,6 +15,7 @@ dependencies = []
 edge-evidence-simulate = "edge_evidence.simulator:main"
 edge-evidence-campaign = "edge_evidence.campaign:main"
 edge-evidence-bundle = "edge_evidence.bundle:main"
+edge-evidence-recovery = "edge_evidence.recovery:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<9", "ruff>=0.6,<1"]

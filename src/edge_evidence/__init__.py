@@ -15,6 +15,16 @@ from edge_evidence.ledger import (
     SourceSequenceConflict,
     StoredEvent,
 )
+from edge_evidence.mqtt import (
+    MQTT_ADAPTER_VERSION,
+    DeliveryDisposition,
+    DeliveryResult,
+    MqttAdapterError,
+    MqttIngestionRuntime,
+    RuntimeMetrics,
+    event_to_mqtt,
+    mqtt_to_event,
+)
 from edge_evidence.projection import (
     PROJECTOR_VERSION,
     ProjectionError,
@@ -41,6 +51,9 @@ __all__ = [
     "IngestResult",
     "IngestStatus",
     "LedgerIntegrityError",
+    "MQTT_ADAPTER_VERSION",
+    "MqttAdapterError",
+    "MqttIngestionRuntime",
     "PROJECTOR_VERSION",
     "ProjectionError",
     "ProjectionResult",
@@ -52,11 +65,16 @@ __all__ = [
     "StreamFinding",
     "StoredEvent",
     "SystemIdentity",
+    "DeliveryDisposition",
+    "DeliveryResult",
+    "RuntimeMetrics",
     "__version__",
     "inspect_stream",
     "evaluate_quality",
+    "event_to_mqtt",
+    "mqtt_to_event",
     "project_events",
     "replay",
 ]
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.1.0"

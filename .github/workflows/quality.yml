@@ -50,3 +50,10 @@ jobs:
             --bundle-id ci-synthetic-missing \
             --created-at 2026-01-02T03:04:05Z
           python -m edge_evidence.bundle verify /tmp/edge-evidence-ci
+
+      - name: Prove abrupt restart and deterministic recovery
+        run: |
+          python -m edge_evidence.recovery run \
+            --workspace /tmp/edge-recovery-ci \
+            --count 8 \
+            --crash-after 4

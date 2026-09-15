@@ -222,6 +222,29 @@ class EventLedger:
             ).fetchone()
             return int(row["n"])
 
+    def find_event(self, event_id: str) -> StoredEvent | None:
+        """Return one integrity-checked event identity, if already committed."""
+        with self._lock:
+            row = self._connection.execute(
+                """
+                SELECT ordinal, canonical_json, content_sha256
+                FROM events WHERE event_id = ?
+                """,
+                (event_id,),
+            ).fetchone()
+        if row is None:
+            return None
+        actual_digest = hashlib.sha256(row["canonical_json"].encode()).hexdigest()
+        if actual_digest != row["content_sha256"]:
+            raise LedgerIntegrityError(
+                f"content digest mismatch at ordinal {row['ordinal']}"
+            )
+        return StoredEvent(
+            ordinal=row["ordinal"],
+            event=CanonicalEvent.from_mapping(json.loads(row["canonical_json"])),
+            content_sha256=row["content_sha256"],
+        )
+
     def read_events(self) -> tuple[StoredEvent, ...]:
         with self._lock:
             rows = self._connection.execute(
