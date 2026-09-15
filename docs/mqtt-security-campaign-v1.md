@@ -9,10 +9,12 @@ All identities are synthetic and valid for two days:
 | `broker` | Present the verified `localhost` server identity |
 | `edge-publisher` | Publish to `edge-evidence/v1/+/+` |
 | `edge-consumer` | Subscribe to `edge-evidence/v1/+/+` |
+| `health-probe` | Publish only to the separate `health/mqtt` topic |
 | `rogue-client` | None; signed by an untrusted synthetic CA |
 
 Private keys and certificates are generated beneath an ignored directory during
 the test run. They are fixtures, not production credentials.
+The container healthcheck cannot publish into the evidence topic hierarchy.
 
 ## Positive proof
 

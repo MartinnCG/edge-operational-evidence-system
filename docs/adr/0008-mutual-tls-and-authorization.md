@@ -17,6 +17,8 @@ broker certificate and client certificates at test time. Require certificates
 signed by that CA, verify the broker hostname, and map the client certificate CN
 to the Mosquitto username. Apply a static ACL that grants `edge-publisher` write
 access and `edge-consumer` read access only to `edge-evidence/v1/+/+`.
+A separate `health-probe` identity may write only to `health/mqtt`, outside the
+evidence hierarchy.
 
 Paho receives explicit CA, client-certificate and private-key paths and always
 sets `tls_insecure_set(False)`. The negative campaign attempts a connection with

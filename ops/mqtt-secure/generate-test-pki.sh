@@ -29,6 +29,7 @@ issue_certificate() {
 issue_certificate "broker" "serverAuth" "DNS:localhost,IP:127.0.0.1"
 issue_certificate "edge-consumer" "clientAuth" "DNS:edge-consumer"
 issue_certificate "edge-publisher" "clientAuth" "DNS:edge-publisher"
+issue_certificate "health-probe" "clientAuth" "DNS:health-probe"
 
 openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 2 \
   -subj "/CN=rogue-test-ca" \

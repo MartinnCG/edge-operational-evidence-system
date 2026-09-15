@@ -13,9 +13,9 @@ services:
         - >-
           mosquitto_pub -h localhost -p 8883
           --cafile /mosquitto/secrets/ca.crt
-          --cert /mosquitto/secrets/edge-publisher.crt
-          --key /mosquitto/secrets/edge-publisher.key
-          -t edge-evidence/v1/health/health -m '{}' -q 1
+          --cert /mosquitto/secrets/health-probe.crt
+          --key /mosquitto/secrets/health-probe.key
+          -t health/mqtt -m 'ready' -q 1
       interval: 2s
       timeout: 6s
       retries: 10
