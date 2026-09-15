@@ -1,0 +1,8 @@
+user edge-consumer
+topic read edge-evidence/v1/+/+
+
+user edge-publisher
+topic write edge-evidence/v1/+/+
+
+user health-probe
+topic write health/mqtt

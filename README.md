@@ -5,12 +5,12 @@
 Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
-**Current phase:** M7 — real Mosquitto integration and reconnect campaign  
+**Current phase:** M8 — mutual-TLS identity and MQTT authorization  
 **Implemented capability:** synthetic event generation, canonical validation,
 durable ingestion, versioned replay, quality campaigns, portable bundles and
 real-broker integration proof
 
-## Demonstrated through M7
+## Demonstrated through M8
 
 - a strict versioned event envelope;
 - byte-identical JSONL for identical seed and configuration;
@@ -45,10 +45,16 @@ real-broker integration proof
 - retained-message delivery to a fresh subscriber;
 - controlled broker stop/start with automatic client reconnection;
 - resumed durable ingestion after the broker becomes available again.
+- ephemeral synthetic certificate-authority and role identities;
+- TLS with broker hostname verification and mandatory client certificates;
+- certificate Common Name mapped to Mosquitto authorization identity;
+- separate publish and consume ACL permissions;
+- negative anonymous, untrusted-certificate and wrong-role campaigns;
+- proof that unauthorized publication does not mutate the evidence ledger.
 
-M7 does **not** claim production broker certification, TLS or authentication,
-end-to-end network reliability, sensor accuracy, safety diagnosis, long-term
-archival guarantees or physical fault survivability.
+M8 does **not** claim production PKI, certificate rotation or revocation,
+hardware-backed keys, enterprise identity integration, end-to-end availability,
+sensor accuracy or safety-critical suitability.
 
 ## Quick start
 
@@ -109,6 +115,16 @@ MQTT_INTEGRATION=1 python -m pytest \
 docker compose -f ops/mqtt/compose.yml down --volumes
 ```
 
+Run the opt-in mutual-TLS and authorization campaign:
+
+```bash
+sh ops/mqtt-secure/generate-test-pki.sh
+docker compose -f ops/mqtt-secure/compose.yml up -d --wait
+MQTT_SECURITY_INTEGRATION=1 python -m pytest \
+  tests/test_mqtt_security_integration.py -m integration
+docker compose -f ops/mqtt-secure/compose.yml down --volumes
+```
+
 The command emits synthetic data only. See the executable contract in
 [`docs/event-contract-v1.md`](docs/event-contract-v1.md).
 
@@ -142,6 +158,8 @@ M6 maps MQTT deliveries into the canonical boundary and proves local recovery,
 redelivery convergence and evidence verification after abrupt process exit.
 M7 connects that boundary to a pinned Mosquitto broker through Paho, then proves
 retained QoS 1 delivery and recovery from a controlled broker outage.
+M8 adds mutual-TLS identity and role-based authorization, including negative
+campaigns that prove unauthorized inputs cannot reach the evidence ledger.
 
 ## Delivery sequence
 
@@ -155,6 +173,7 @@ retained QoS 1 delivery and recovery from a controlled broker outage.
 | M5 | Reproducible evidence bundle and operational report |
 | M6 | MQTT adapter and controlled offline/restart campaign |
 | M7 | Real Mosquitto/Paho integration and reconnect campaign |
+| M8 | Mutual-TLS identity and per-client authorization campaign |
 
 ## Architecture
 
@@ -178,6 +197,9 @@ The executable message and campaign contracts are documented in
 The real-broker decision and campaign are documented in
 [`ADR-0007`](docs/adr/0007-real-mqtt-integration.md) and
 [`mqtt-integration-campaign-v1.md`](docs/mqtt-integration-campaign-v1.md).
+The secure boundary is recorded in
+[`ADR-0008`](docs/adr/0008-mutual-tls-and-authorization.md) and
+[`mqtt-security-campaign-v1.md`](docs/mqtt-security-campaign-v1.md).
 
 ## Claims and data boundary
 

@@ -1,0 +1,21 @@
+services:
+  mosquitto-secure:
+    image: eclipse-mosquitto:2.1.2-alpine
+    ports:
+      - "127.0.0.1:18884:8883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./acl:/mosquitto/config/acl:ro
+      - ./generated:/mosquitto/secrets:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mosquitto_pub -h localhost -p 8883
+          --cafile /mosquitto/secrets/ca.crt
+          --cert /mosquitto/secrets/health-probe.crt
+          --key /mosquitto/secrets/health-probe.key
+          -t health/mqtt -m 'ready' -q 1
+      interval: 2s
+      timeout: 6s
+      retries: 10
