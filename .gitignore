@@ -1,1 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Coverage and build outputs
+.coverage
+htmlcov/
+build/
+dist/
+
+# Runtime evidence and local databases
+*.db
+*.sqlite
+*.sqlite3
+runtime/
+artifacts/
+evidence/
+
+# Ephemeral test credentials
 ops/mqtt-secure/generated/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
