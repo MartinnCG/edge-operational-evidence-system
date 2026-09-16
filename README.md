@@ -6,6 +6,7 @@ Edge-first reference system for reproducible, traceable operational evidence
 under imperfect sensors and networks.
 
 **Current phase:** M8 — mutual-TLS identity and MQTT authorization  
+**Current release:** v0.2.0  
 **Implemented capability:** synthetic event generation, canonical validation,
 durable ingestion, versioned replay, quality campaigns, portable bundles and
 real-broker integration proof
@@ -200,6 +201,10 @@ The real-broker decision and campaign are documented in
 The secure boundary is recorded in
 [`ADR-0008`](docs/adr/0008-mutual-tls-and-authorization.md) and
 [`mqtt-security-campaign-v1.md`](docs/mqtt-security-campaign-v1.md).
+
+Release history is maintained in [`CHANGELOG.md`](CHANGELOG.md). The verified
+v0.2.0 boundary is summarized in
+[`docs/releases/v0.2.0.md`](docs/releases/v0.2.0.md).
 
 ## Claims and data boundary
 

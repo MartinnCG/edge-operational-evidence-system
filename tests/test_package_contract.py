@@ -3,8 +3,8 @@
 from edge_evidence import SYSTEM_ID, __version__
 
 
-def test_development_version_is_explicit() -> None:
-    assert __version__ == "0.2.0.dev0"
+def test_release_version_is_explicit() -> None:
+    assert __version__ == "0.2.0"
 
 
 def test_system_identity_declares_m8_boundary() -> None:
