@@ -16,6 +16,7 @@ edge-evidence-simulate = "edge_evidence.simulator:main"
 edge-evidence-campaign = "edge_evidence.campaign:main"
 edge-evidence-bundle = "edge_evidence.bundle:main"
 edge-evidence-recovery = "edge_evidence.recovery:main"
+edge-evidence-historical = "edge_evidence.historical:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<9", "ruff>=0.6,<1"]

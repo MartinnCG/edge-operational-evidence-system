@@ -5,6 +5,34 @@ All notable changes to this project are documented in this file.
 The project uses semantic versioning for public releases. Development milestones
 describe evidence boundaries and do not imply production certification.
 
+## [Unreleased]
+
+### Added
+
+- A deterministic historical JSONL importer supporting the two documented
+  field-record shapes without embedding private source identifiers.
+- HMAC pseudonymisation for event and source identities, with the key supplied
+  only through an environment variable.
+- Explicit historical-import metadata, source-stream sequence derivation and
+  provenance digests.
+- Independent double-replay qualification and a sanitised M9A aggregate result.
+- Synthetic tests covering privacy, both source shapes, deterministic replay,
+  key separation, malformed input and duplicate identity handling.
+
+### Security
+
+- Raw telemetry, private keys, canonicalised private output and deployment
+  paths remain outside version control.
+- Public results withhold pseudonym-key-dependent event and state digests.
+
+### Limitations
+
+- Historical import cannot reconstruct an unavailable original receipt time;
+  import time is recorded explicitly and delay metrics must not be interpreted
+  as live transport latency.
+- M9A does not demonstrate current MQTT, mTLS, hardware or redeployment
+  continuity. Those claims remain reserved for a future M9B campaign.
+
 ## [0.2.0] - 2026-09-16
 
 ### Added
