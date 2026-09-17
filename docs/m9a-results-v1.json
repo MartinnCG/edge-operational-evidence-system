@@ -1,0 +1,21 @@
+{
+  "archive_sha256": "634c3884a8b3e8f4020cb4dca518c9632d8fb34d99d8ffc701f0cddcf780b6f6",
+  "canonical_event_digest_disclosure": "withheld-pseudonym-key-bound",
+  "dataset_sha256": "c6d40d5d38cefca3b1efdcd4afcec3812a1d3e0eb9839f6a9905be25c6573b8f",
+  "documented_active_evidence_days": 70,
+  "event_count": 38349,
+  "first_observation_date": "2026-02-13",
+  "format_counts": {
+    "control-v1": 15,
+    "primary-v1": 38334
+  },
+  "independent_replay_match": true,
+  "last_observation_date": "2026-05-25",
+  "milestone": "M9A",
+  "qualification_version": "1.0",
+  "rejection_count": 0,
+  "result": "pass",
+  "source_classification": "private-historical-field-derived",
+  "source_stream_count": 6,
+  "state_digest_disclosure": "withheld-pseudonym-key-bound"
+}

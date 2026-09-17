@@ -31,3 +31,7 @@ ops/mqtt-secure/generated/
 .idea/
 .DS_Store
 Thumbs.db
+# Private M9A inputs and generated artifacts must never be committed.
+/private/
+*.sqlite-shm
+*.sqlite-wal

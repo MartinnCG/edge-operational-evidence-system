@@ -126,6 +126,22 @@ MQTT_SECURITY_INTEGRATION=1 python -m pytest \
 docker compose -f ops/mqtt-secure/compose.yml down --volumes
 ```
 
+Qualify a private historical JSONL stream without publishing its identities:
+
+```bash
+export EDGE_EVIDENCE_IMPORT_KEY='<private value of at least 16 bytes>'
+edge-evidence-historical \
+  --input /outside-the-repository/events.jsonl \
+  --events-output /outside-the-repository/events.canonical.jsonl \
+  --report-output /outside-the-repository/qualification.private.json \
+  --archive-sha256 <source-archive-sha256> \
+  --imported-at 2026-09-17T00:00:00Z
+```
+
+The private key, original stream and canonical output must remain outside the
+repository. The public M9A result contains aggregate counts and stable source
+digests only.
+
 The command emits synthetic data only. See the executable contract in
 [`docs/event-contract-v1.md`](docs/event-contract-v1.md).
 
@@ -175,6 +191,8 @@ campaigns that prove unauthorized inputs cannot reach the evidence ledger.
 | M6 | MQTT adapter and controlled offline/restart campaign |
 | M7 | Real Mosquitto/Paho integration and reconnect campaign |
 | M8 | Mutual-TLS identity and per-client authorization campaign |
+| M9A | Historical field-evidence qualification and deterministic replay |
+| M9B | Future live redeployment continuity campaign; not yet executed |
 
 ## Architecture
 
@@ -201,6 +219,9 @@ The real-broker decision and campaign are documented in
 The secure boundary is recorded in
 [`ADR-0008`](docs/adr/0008-mutual-tls-and-authorization.md) and
 [`mqtt-security-campaign-v1.md`](docs/mqtt-security-campaign-v1.md).
+The historical-import boundary and sanitised result are recorded in
+[`ADR-0009`](docs/adr/0009-historical-import-boundary.md) and
+[`m9a-historical-qualification-v1.md`](docs/m9a-historical-qualification-v1.md).
 
 Release history is maintained in [`CHANGELOG.md`](CHANGELOG.md). The verified
 v0.2.0 boundary is summarized in
